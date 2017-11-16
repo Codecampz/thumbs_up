@@ -40,7 +40,7 @@ module ThumbsUp #:nodoc:
       #       user.vote_count()      # All votes
 
       def vote_count(for_or_against = :all)
-        v = Vote.where(:voter_id => id).where(:voter_type => self.class.base_class.name)
+        v = Vote.where(:voter_id => id)
         v = case for_or_against
           when :all   then v
           when :up    then v.where(:vote => true)
@@ -60,7 +60,6 @@ module ThumbsUp #:nodoc:
       def voted_on?(voteable)
         0 < Vote.where(
               :voter_id => self.id,
-              :voter_type => self.class.base_class.name,
               :voteable_id => voteable.id,
               :voteable_type => voteable.class.base_class.name
             ).count
@@ -97,7 +96,6 @@ module ThumbsUp #:nodoc:
       def unvote_for(voteable)
         Vote.where(
           :voter_id => self.id,
-          :voter_type => self.class.base_class.name,
           :voteable_id => voteable.id,
           :voteable_type => voteable.class.base_class.name
         ).map(&:destroy)
@@ -109,7 +107,6 @@ module ThumbsUp #:nodoc:
         raise ArgumentError, "expected :up or :down" unless [:up, :down].include?(direction)
         0 < Vote.where(
               :voter_id => self.id,
-              :voter_type => self.class.base_class.name,
               :vote => direction == :up ? true : false,
               :voteable_id => voteable.id,
               :voteable_type => voteable.class.base_class.name
@@ -119,7 +116,6 @@ module ThumbsUp #:nodoc:
       def voted_how?(voteable)
         votes = Vote.where(
               :voter_id => self.id,
-              :voter_type => self.class.base_class.name,
               :voteable_id => voteable.id,
               :voteable_type => voteable.class.base_class.name
             ).map(&:vote) #in case votes is premitted to be duplicated

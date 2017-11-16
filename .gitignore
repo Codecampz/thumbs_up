@@ -1,5 +1,0 @@
-*.gem
-pkg/*
-Gemfile.lock
-coverage/
-test.sqlite3
